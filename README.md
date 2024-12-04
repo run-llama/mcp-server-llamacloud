@@ -1,29 +1,14 @@
-# mcp-server-llamacloud MCP Server
+# LlamaCloud MCP Server
 
-A MCP server connecting to a managed index on LlamaCloud
+A MCP server connecting to a managed index on [LlamaCloud](https://cloud.llamaindex.ai/)
 
-This is a TypeScript-based MCP server that implements a simple notes system. It demonstrates core MCP concepts by providing:
-
-- Resources representing text notes with URIs and metadata
-- Tools for creating new notes
-- Prompts for generating summaries of notes
+This is a TypeScript-based MCP server that implements a connection to a managed index on LlamaCloud.
 
 ## Features
 
-### Resources
-- List and access notes via `note://` URIs
-- Each note has a title, content and metadata
-- Plain text mime type for simple content access
-
 ### Tools
-- `create_note` - Create new text notes
-  - Takes title and content as required parameters
-  - Stores note in server state
-
-### Prompts
-- `summarize_notes` - Generate a summary of all stored notes
-  - Includes all note contents as embedded resources
-  - Returns structured prompt for LLM summarization
+- `get_information` - Get information from your knowledge base to answer questions.
+  - Takes query as required parameters
 
 ## Development
 
@@ -52,8 +37,16 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
 ```json
 {
   "mcpServers": {
-    "mcp-server-llamacloud": {
-      "command": "/path/to/mcp-server-llamacloud/build/index.js"
+    "llamacloud": {
+      "command": "node",
+      "args": [
+        "/path/to/llamacloud/build/index.js",
+      ],
+      "env": {
+        "LLAMA_CLOUD_INDEX_NAME": "<YOUR_INDEX_NAME>",
+        "LLAMA_CLOUD_PROJECT_NAME": "<YOUR_PROJECT_NAME>",
+        "LLAMA_CLOUD_API_KEY": "<YOUR_API_KEY>"
+      }
     }
   }
 }
