@@ -4,6 +4,8 @@ A MCP server connecting to a managed index on [LlamaCloud](https://cloud.llamain
 
 This is a TypeScript-based MCP server that implements a connection to a managed index on LlamaCloud.
 
+<a href="https://glama.ai/mcp/servers/o4fcj7x2cg"><img width="380" height="200" src="https://glama.ai/mcp/servers/o4fcj7x2cg/badge" alt="LlamaCloud Server MCP server" /></a>
+
 ## Features
 
 ### Tools
