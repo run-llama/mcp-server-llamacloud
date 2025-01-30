@@ -1,0 +1,25 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - llamaCloudIndexName
+      - llamaCloudProjectName
+      - llamaCloudApiKey
+    properties:
+      llamaCloudIndexName:
+        type: string
+        description: The index name for the LlamaCloud server.
+      llamaCloudProjectName:
+        type: string
+        description: The project name for the LlamaCloud server.
+      llamaCloudApiKey:
+        type: string
+        description: The API key for accessing the LlamaCloud server.
+  commandFunction:
+    # A function that produces the CLI command to start the MCP on stdio.
+    |-
+    (config) => ({ command: 'node', args: ['build/index.js'], env: { LLAMA_CLOUD_INDEX_NAME: config.llamaCloudIndexName, LLAMA_CLOUD_PROJECT_NAME: config.llamaCloudProjectName, LLAMA_CLOUD_API_KEY: config.llamaCloudApiKey } })
