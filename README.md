@@ -31,6 +31,14 @@ npm run watch
 
 ## Installation
 
+### Installing via Smithery
+
+To install LlamaCloud for Claude Desktop automatically via [Smithery](https://smithery.ai/server/mcp-server-llamacloud):
+
+```bash
+npx -y @smithery/cli install mcp-server-llamacloud --client claude
+```
+
 To use with Claude Desktop, add the server config:
 
 On MacOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
