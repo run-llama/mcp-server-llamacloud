@@ -1,16 +1,17 @@
 # LlamaCloud MCP Server
 
-A MCP server connecting to a managed index on [LlamaCloud](https://cloud.llamaindex.ai/)
+A MCP server connecting to multiple managed indexes on [LlamaCloud](https://cloud.llamaindex.ai/)
 
-This is a TypeScript-based MCP server that implements a connection to a managed index on LlamaCloud.
+This is a TypeScript-based MCP server that creates multiple tools, each connected to a specific managed index on LlamaCloud. Each tool is defined through command-line arguments.
 
 <a href="https://glama.ai/mcp/servers/o4fcj7x2cg"><img width="380" height="200" src="https://glama.ai/mcp/servers/o4fcj7x2cg/badge" alt="LlamaCloud Server MCP server" /></a>
 
 ## Features
 
 ### Tools
-- `get_information` - Get information from your knowledge base to answer questions.
-  - Takes query as required parameters
+- Creates a separate tool for each index you define
+- Each tool provides a `query` parameter to search its specific index
+- Auto-generates tool names like `get_information_index_name` based on index names
 
 ## Development
 
@@ -42,10 +43,11 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
     "llamacloud": {
       "command": "node",
       "args": [
-        "/path/to/llamacloud/build/index.js"
+        "/path/to/llamacloud/build/index.js",
+        "--index", "10k-SEC-Tesla", "--description", "10k SEC documents from 2023 for Tesla",
+        "--index", "10k-SEC-Apple", "--description", "10k SEC documents from 2023 for Apple"
       ],
       "env": {
-        "LLAMA_CLOUD_INDEX_NAME": "<YOUR_INDEX_NAME>",
         "LLAMA_CLOUD_PROJECT_NAME": "<YOUR_PROJECT_NAME>",
         "LLAMA_CLOUD_API_KEY": "<YOUR_API_KEY>"
       }
@@ -53,6 +55,24 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
   }
 }
 ```
+
+### Tool Definition Format
+
+You can define multiple tools by providing pairs of `--index` and `--description` arguments. Each tool definition follows this format:
+
+```
+--index "IndexName" --description "Description text"
+```
+
+For example:
+
+```bash
+node build/index.js --index "10k-SEC-Tesla" --description "10k SEC documents from 2023 for Tesla" --index "10k-SEC-Apple" --description "10k SEC documents from 2023 for Apple"
+```
+
+This will create two tools:
+1. `get_information_10k_sec_tesla` - For querying the 10k-SEC-Tesla index
+2. `get_information_10k_sec_apple` - For querying the 10k-SEC-Apple index
 
 ### Debugging
 
