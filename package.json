@@ -1,6 +1,6 @@
 {
   "name": "@llamaindex/mcp-server-llamacloud",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A MCP server connecting to a managed index on LlamaCloud",
   "license": "MIT",
   "author": "LlamaIndex Inc.",
