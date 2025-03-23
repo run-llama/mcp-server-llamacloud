@@ -42,7 +42,7 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
     "llamacloud": {
       "command": "node",
       "args": [
-        "/path/to/llamacloud/build/index.js",
+        "/path/to/llamacloud/build/index.js"
       ],
       "env": {
         "LLAMA_CLOUD_INDEX_NAME": "<YOUR_INDEX_NAME>",
