@@ -9,6 +9,7 @@ This is a TypeScript-based MCP server that creates multiple tools, each connecte
 ## Features
 
 ### Tools
+
 - Creates a separate tool for each index you define
 - Each tool provides a `query` parameter to search its specific index
 - Auto-generates tool names like `get_information_index_name` based on index names
@@ -16,16 +17,19 @@ This is a TypeScript-based MCP server that creates multiple tools, each connecte
 ## Development
 
 Install dependencies:
+
 ```bash
 npm install
 ```
 
 Build the server:
+
 ```bash
 npm run build
 ```
 
 For development with auto-rebuild:
+
 ```bash
 npm run watch
 ```
@@ -44,8 +48,14 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
       "command": "node",
       "args": [
         "/path/to/llamacloud/build/index.js",
-        "--index", "10k-SEC-Tesla", "--description", "10k SEC documents from 2023 for Tesla",
-        "--index", "10k-SEC-Apple", "--description", "10k SEC documents from 2023 for Apple"
+        "--index",
+        "10k-SEC-Tesla",
+        "--description",
+        "10k SEC documents from 2023 for Tesla",
+        "--index",
+        "10k-SEC-Apple",
+        "--description",
+        "10k SEC documents from 2023 for Apple"
       ],
       "env": {
         "LLAMA_CLOUD_PROJECT_NAME": "<YOUR_PROJECT_NAME>",
@@ -71,6 +81,7 @@ node build/index.js --index "10k-SEC-Tesla" --description "10k SEC documents fro
 ```
 
 This will create two tools:
+
 1. `get_information_10k_sec_tesla` - For querying the 10k-SEC-Tesla index
 2. `get_information_10k_sec_apple` - For querying the 10k-SEC-Apple index
 

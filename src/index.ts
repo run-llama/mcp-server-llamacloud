@@ -7,11 +7,11 @@
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { LlamaCloudIndex, MetadataMode } from 'llamaindex';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { LlamaCloudIndex, MetadataMode } from "llamaindex";
 
 // Define the tool definition interface
 interface ToolDefinition {
@@ -24,45 +24,55 @@ interface ToolDefinition {
 function parseToolDefinitions(): ToolDefinition[] {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error('No tool definitions provided. Use format: --index "IndexName" --description "Description"');
+    console.error(
+      'No tool definitions provided. Use format: --index "IndexName" --description "Description"',
+    );
     process.exit(1);
   }
 
   const toolDefinitions: ToolDefinition[] = [];
   let currentIndexName: string | null = null;
-  
+
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--index' && i + 1 < args.length) {
+    if (args[i] === "--index" && i + 1 < args.length) {
       // Save the current index name. We'll wait for the description to complete the definition
       currentIndexName = args[i + 1].trim();
       i++; // Skip the next argument since we consumed it
-    } else if (args[i] === '--description' && i + 1 < args.length && currentIndexName) {
+    } else if (
+      args[i] === "--description" &&
+      i + 1 < args.length &&
+      currentIndexName
+    ) {
       // We have both an index name and a description, so we can create a tool definition
       const description = args[i + 1].trim();
-      const toolName = `get_information_${currentIndexName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-      
+      const toolName = `get_information_${currentIndexName.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+
       toolDefinitions.push({
         indexName: currentIndexName,
         description,
-        toolName
+        toolName,
       });
-      
+
       // Reset for the next pair
       currentIndexName = null;
       i++; // Skip the next argument since we consumed it
     }
   }
-  
+
   // Check if we have an index without a description at the end
   if (currentIndexName) {
-    console.warn(`Warning: Index '${currentIndexName}' was specified without a description.`);
+    console.warn(
+      `Warning: Index '${currentIndexName}' was specified without a description.`,
+    );
   }
-  
+
   if (toolDefinitions.length === 0) {
-    console.error('No valid tool definitions found. Use format: --index "IndexName" --description "Description"');
+    console.error(
+      'No valid tool definitions found. Use format: --index "IndexName" --description "Description"',
+    );
     process.exit(1);
   }
-  
+
   return toolDefinitions;
 }
 
@@ -78,12 +88,20 @@ const server = new Server(
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 
 // Get the project name and API key from environment variables
-const projectName = process.env.LLAMA_CLOUD_PROJECT_NAME || (() => { throw new Error('LLAMA_CLOUD_PROJECT_NAME is not set') })();
-const apiKey = process.env.LLAMA_CLOUD_API_KEY || (() => { throw new Error('LLAMA_CLOUD_API_KEY is not set') })();
+const projectName =
+  process.env.LLAMA_CLOUD_PROJECT_NAME ||
+  (() => {
+    throw new Error("LLAMA_CLOUD_PROJECT_NAME is not set");
+  })();
+const apiKey =
+  process.env.LLAMA_CLOUD_API_KEY ||
+  (() => {
+    throw new Error("LLAMA_CLOUD_API_KEY is not set");
+  })();
 
 // Parse tool definitions from command line arguments
 const toolDefinitions = parseToolDefinitions();
@@ -97,9 +115,11 @@ for (const definition of toolDefinitions) {
     projectName,
     apiKey,
   });
-  
+
   indexes.set(definition.toolName!, index);
-  console.log(`Created index for tool ${definition.toolName}: ${definition.indexName} - ${definition.description}`);
+  console.log(
+    `Created index for tool ${definition.toolName}: ${definition.indexName} - ${definition.description}`,
+  );
 }
 
 /**
@@ -108,7 +128,7 @@ for (const definition of toolDefinitions) {
  */
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
-    tools: toolDefinitions.map(definition => ({
+    tools: toolDefinitions.map((definition) => ({
       name: definition.toolName!,
       description: `Get information from the ${definition.indexName} index. The index contains ${definition.description}`,
       inputSchema: {
@@ -116,12 +136,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         properties: {
           query: {
             type: "string",
-            description: `The query used to get information from the ${definition.indexName} index.`
+            description: `The query used to get information from the ${definition.indexName} index.`,
           },
         },
-        required: ["query"]
-      }
-    }))
+        required: ["query"],
+      },
+    })),
   };
 });
 
@@ -132,11 +152,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const toolName = request.params.name;
   const index = indexes.get(toolName);
-  
+
   if (!index) {
     throw new Error(`Unknown tool: ${toolName}`);
   }
-  
+
   const query = String(request.params.arguments?.query);
   if (!query) {
     throw new Error("query parameter is required");
@@ -146,28 +166,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const nodesWithScore = await retriever.retrieve({ query });
 
   const nodes = nodesWithScore.map((node) => node.node);
-  const context = nodes.map((r) => r.getContent(MetadataMode.NONE)).join("\n\n");
+  const context = nodes
+    .map((r) => r.getContent(MetadataMode.NONE))
+    .join("\n\n");
 
   return {
-    content: [{
-      type: "text",
-      text: context,
-    }]
+    content: [
+      {
+        type: "text",
+        text: context,
+      },
+    ],
   };
-}); 
-
-
+});
 
 /**
  * Start the server using stdio transport.
  * This allows the server to communicate via standard input/output streams.
  */
 async function main() {
-  console.log(`Starting MCP server with ${toolDefinitions.length} tools:`); 
-  toolDefinitions.forEach(def => {
+  console.log(`Starting MCP server with ${toolDefinitions.length} tools:`);
+  toolDefinitions.forEach((def) => {
     console.log(`- ${def.toolName}: ${def.indexName} - ${def.description}`);
   });
-  
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
