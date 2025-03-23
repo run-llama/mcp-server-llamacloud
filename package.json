@@ -1,5 +1,5 @@
 {
-  "name": "mcp-server-llamacloud",
+  "name": "@llamaindex/mcp-server-llamacloud",
   "version": "0.1.0",
   "description": "A MCP server connecting to a managed index on LlamaCloud",
   "license": "MIT",
@@ -14,18 +14,20 @@
   ],
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
-    "prepare": "npm run build",
     "watch": "tsc --watch",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js",
     "format": "prettier --ignore-unknown --cache --check .",
     "format:write": "prettier --ignore-unknown --write .",
-    "lint": "eslint . --ext .ts,.js,.mjs --fix"
+    "lint": "eslint . --ext .ts,.js,.mjs --fix",
+    "release": "npm run build && changeset publish",
+    "new-version": "changeset version && npm run format:write && npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
     "llamaindex": "^0.9.11"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.28.1",
     "@eslint/js": "^9.22.0",
     "@types/node": "^22.9.3",
     "eslint": "^9.22.0",
