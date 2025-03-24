@@ -14,6 +14,53 @@ This is a TypeScript-based MCP server that creates multiple tools, each connecte
 - Each tool provides a `query` parameter to search its specific index
 - Auto-generates tool names like `get_information_index_name` based on index names
 
+## Installation
+
+To use with your MCP Client (e.g. Claude Desktop, Windsurf or Cursor), add the following config to your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "llamacloud": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@llamaindex/mcp-server-llamacloud",
+        "--index",
+        "10k-SEC-Tesla",
+        "--description",
+        "10k SEC documents from 2023 for Tesla",
+        "--index",
+        "10k-SEC-Apple",
+        "--description",
+        "10k SEC documents from 2023 for Apple"
+      ],
+      "env": {
+        "LLAMA_CLOUD_PROJECT_NAME": "<YOUR_PROJECT_NAME>",
+        "LLAMA_CLOUD_API_KEY": "<YOUR_API_KEY>"
+      }
+    }
+  }
+}
+```
+
+For Claude, the MCP config can be found at:
+
+- On MacOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+
+### Tool Definition Format
+
+In the `args` array of the MCP config, you can define multiple tools by providing pairs of `--index` and `--description` arguments. Each pair defines a new tool.
+
+For example:
+
+```bash
+--index "10k-SEC-Tesla" --description "10k SEC documents from 2023 for Tesla"
+```
+
+Adds a tool for the `10k-SEC-Tesla` LlamaCloud index to the MCP server.
+
 ## Development
 
 Install dependencies:
@@ -34,56 +81,7 @@ For development with auto-rebuild:
 npm run watch
 ```
 
-## Installation
-
-To use with Claude Desktop, add the server config:
-
-On MacOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "llamacloud": {
-      "command": "node",
-      "args": [
-        "/path/to/llamacloud/build/index.js",
-        "--index",
-        "10k-SEC-Tesla",
-        "--description",
-        "10k SEC documents from 2023 for Tesla",
-        "--index",
-        "10k-SEC-Apple",
-        "--description",
-        "10k SEC documents from 2023 for Apple"
-      ],
-      "env": {
-        "LLAMA_CLOUD_PROJECT_NAME": "<YOUR_PROJECT_NAME>",
-        "LLAMA_CLOUD_API_KEY": "<YOUR_API_KEY>"
-      }
-    }
-  }
-}
-```
-
-### Tool Definition Format
-
-You can define multiple tools by providing pairs of `--index` and `--description` arguments. Each tool definition follows this format:
-
-```
---index "IndexName" --description "Description text"
-```
-
-For example:
-
-```bash
-node build/index.js --index "10k-SEC-Tesla" --description "10k SEC documents from 2023 for Tesla" --index "10k-SEC-Apple" --description "10k SEC documents from 2023 for Apple"
-```
-
-This will create two tools:
-
-1. `get_information_10k_sec_tesla` - For querying the 10k-SEC-Tesla index
-2. `get_information_10k_sec_apple` - For querying the 10k-SEC-Apple index
+To use the development version, replace in your MCP config `npx @llamaindex/mcp-server-llamacloud` with `node ./build/index.js`.
 
 ### Debugging
 
