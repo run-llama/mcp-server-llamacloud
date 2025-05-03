@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/run-llama-mcp-server-llamacloud-badge.png)](https://mseep.ai/app/run-llama-mcp-server-llamacloud)
+
 # LlamaCloud MCP Server
 
 A MCP server connecting to multiple managed indexes on [LlamaCloud](https://cloud.llamaindex.ai/)
