@@ -117,8 +117,8 @@ for (const definition of toolDefinitions) {
   });
 
   indexes.set(definition.toolName!, index);
-  console.log(
-    `Created index for tool ${definition.toolName}: ${definition.indexName} - ${definition.description}`,
+  process.stderr.write(
+    `Created index for tool ${definition.toolName}: ${definition.indexName} - ${definition.description}\n`,
   );
 }
 
@@ -185,9 +185,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
  * This allows the server to communicate via standard input/output streams.
  */
 async function main() {
-  console.log(`Starting MCP server with ${toolDefinitions.length} tools:`);
+  process.stderr.write(
+    `Starting MCP server with ${toolDefinitions.length} tools:\n`,
+  );
   toolDefinitions.forEach((def) => {
-    console.log(`- ${def.toolName}: ${def.indexName} - ${def.description}`);
+    process.stderr.write(
+      `- ${def.toolName}: ${def.indexName} - ${def.description}\n`,
+    );
   });
 
   const transport = new StdioServerTransport();
