@@ -185,9 +185,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
  * This allows the server to communicate via standard input/output streams.
  */
 async function main() {
-  process.stderr.write(`Starting MCP server with ${toolDefinitions.length} tools:\n`);
+  process.stderr.write(
+    `Starting MCP server with ${toolDefinitions.length} tools:\n`,
+  );
   toolDefinitions.forEach((def) => {
-    process.stderr.write(`- ${def.toolName}: ${def.indexName} - ${def.description}\n`);
+    process.stderr.write(
+      `- ${def.toolName}: ${def.indexName} - ${def.description}\n`,
+    );
   });
 
   const transport = new StdioServerTransport();
