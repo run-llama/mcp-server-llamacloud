@@ -2,3 +2,5 @@ node_modules/
 build/
 *.log
 .env*
+# Do not push Morgan prompts
+src/Morgan/prompts/
