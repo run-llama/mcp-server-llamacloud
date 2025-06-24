@@ -178,9 +178,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const nodesWithScore = await retriever.retrieve({ query });
 
   const nodes = nodesWithScore.map((node) => node.node);
-  const context = nodes
-    .map((r) => r.getContent(MetadataMode.NONE))
-    .join("\n\n");
+  const context = nodes.map((r) => r.getContent(MetadataMode.LLM)).join("\n\n");
 
   return {
     content: [
