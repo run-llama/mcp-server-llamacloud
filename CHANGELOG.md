@@ -1,5 +1,12 @@
 # @llamaindex/mcp-server-llamacloud
 
+## 0.1.3
+
+### Patch Changes
+
+- 6ba4c5c: Update packages and set "Default" project as default
+- 1f8fb84: Add topK parameter per index to define how many results to use
+
 ## 0.1.2
 
 ### Patch Changes
