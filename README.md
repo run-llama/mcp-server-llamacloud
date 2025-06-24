@@ -32,6 +32,8 @@ The `LLAMA_CLOUD_PROJECT_NAME` environment variable is optional and defaults to 
         "10k-SEC-Tesla",
         "--description",
         "10k SEC documents from 2023 for Tesla",
+        "--topK",
+        "5",
         "--index",
         "10k-SEC-Apple",
         "--description",
@@ -52,15 +54,15 @@ For Claude, the MCP config can be found at:
 
 ### Tool Definition Format
 
-In the `args` array of the MCP config, you can define multiple tools by providing pairs of `--index` and `--description` arguments. Each pair defines a new tool.
+In the `args` array of the MCP config, you can define multiple tools by providing pairs of `--index` and `--description` arguments. Each pair defines a new tool. You can also optionally specify `--topK` to limit the number of results.
 
 For example:
 
 ```bash
---index "10k-SEC-Tesla" --description "10k SEC documents from 2023 for Tesla"
+--index "10k-SEC-Tesla" --description "10k SEC documents from 2023 for Tesla" --topK 5
 ```
 
-Adds a tool for the `10k-SEC-Tesla` LlamaCloud index to the MCP server.
+Adds a tool for the `10k-SEC-Tesla` LlamaCloud index to the MCP server. In this example, it's configured to return the top 5 results.
 
 ## Development
 

@@ -19,6 +19,7 @@ interface ToolDefinition {
   indexName: string;
   description: string;
   toolName?: string;
+  similarityTopK?: number;
 }
 
 // Parse command line arguments
@@ -26,50 +27,58 @@ function parseToolDefinitions(): ToolDefinition[] {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     console.error(
-      'No tool definitions provided. Use format: --index "IndexName" --description "Description"',
+      'No tool definitions provided. Use format: --index "IndexName" --description "Description" [--topK N]',
     );
     process.exit(1);
   }
 
   const toolDefinitions: ToolDefinition[] = [];
-  let currentIndexName: string | null = null;
+  let currentTool: Partial<ToolDefinition> = {};
+
+  const pushCurrentTool = () => {
+    if (Object.keys(currentTool).length > 0) {
+      if (currentTool.indexName && currentTool.description) {
+        currentTool.toolName = `get_information_${currentTool.indexName
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "_")}`;
+        toolDefinitions.push(currentTool as ToolDefinition);
+      } else {
+        console.warn(
+          `Warning: Incomplete tool definition for index '${currentTool.indexName}'. It requires at least --index and --description. Skipping.`,
+        );
+      }
+    }
+  };
 
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === "--index" && i + 1 < args.length) {
-      // Save the current index name. We'll wait for the description to complete the definition
-      currentIndexName = args[i + 1].trim();
-      i++; // Skip the next argument since we consumed it
-    } else if (
-      args[i] === "--description" &&
-      i + 1 < args.length &&
-      currentIndexName
-    ) {
-      // We have both an index name and a description, so we can create a tool definition
-      const description = args[i + 1].trim();
-      const toolName = `get_information_${currentIndexName.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+    const arg = args[i];
+    const value = args[i + 1];
 
-      toolDefinitions.push({
-        indexName: currentIndexName,
-        description,
-        toolName,
-      });
-
-      // Reset for the next pair
-      currentIndexName = null;
-      i++; // Skip the next argument since we consumed it
+    if (arg === "--index") {
+      pushCurrentTool();
+      currentTool = { indexName: value?.trim() };
+      i++;
+    } else if (arg === "--description" && value) {
+      currentTool.description = value.trim();
+      i++;
+    } else if (arg === "--topK" && value) {
+      const topK = parseInt(value, 10);
+      if (!isNaN(topK)) {
+        currentTool.similarityTopK = topK;
+      } else {
+        console.warn(
+          `Warning: Invalid value for --topK: ${value}. Must be an integer.`,
+        );
+      }
+      i++;
     }
   }
 
-  // Check if we have an index without a description at the end
-  if (currentIndexName) {
-    console.warn(
-      `Warning: Index '${currentIndexName}' was specified without a description.`,
-    );
-  }
+  pushCurrentTool();
 
   if (toolDefinitions.length === 0) {
     console.error(
-      'No valid tool definitions found. Use format: --index "IndexName" --description "Description"',
+      'No valid tool definitions found. Use format: --index "IndexName" --description "Description" [--topK N]',
     );
     process.exit(1);
   }
@@ -159,7 +168,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     throw new Error("query parameter is required");
   }
 
-  const retriever = index.asRetriever();
+  const toolDefinition = toolDefinitions.find(
+    (def) => def.toolName === toolName,
+  );
+
+  const retriever = index.asRetriever({
+    similarityTopK: toolDefinition?.similarityTopK,
+  });
   const nodesWithScore = await retriever.retrieve({ query });
 
   const nodes = nodesWithScore.map((node) => node.node);
