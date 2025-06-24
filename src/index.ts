@@ -92,11 +92,7 @@ const server = new Server(
 );
 
 // Get the project name and API key from environment variables
-const projectName =
-  process.env.LLAMA_CLOUD_PROJECT_NAME ||
-  (() => {
-    throw new Error("LLAMA_CLOUD_PROJECT_NAME is not set");
-  })();
+const projectName = process.env.LLAMA_CLOUD_PROJECT_NAME || "Default";
 const apiKey =
   process.env.LLAMA_CLOUD_API_KEY ||
   (() => {
