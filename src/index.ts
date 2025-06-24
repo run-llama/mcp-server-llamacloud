@@ -12,6 +12,7 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { LlamaCloudIndex, MetadataMode } from "llamaindex";
+import packageJson from "../package.json" with { type: "json" };
 
 // Define the tool definition interface
 interface ToolDefinition {
@@ -82,7 +83,7 @@ function parseToolDefinitions(): ToolDefinition[] {
 const server = new Server(
   {
     name: "llamacloud-mcp-server",
-    version: "0.1.0",
+    version: packageJson.version,
   },
   {
     capabilities: {
