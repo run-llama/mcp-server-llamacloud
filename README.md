@@ -18,6 +18,8 @@ This is a TypeScript-based MCP server that creates multiple tools, each connecte
 
 To use with your MCP Client (e.g. Claude Desktop, Windsurf or Cursor), add the following config to your MCP client config:
 
+The `LLAMA_CLOUD_PROJECT_NAME` environment variable is optional and defaults to `Default` if not set.
+
 ```json
 {
   "mcpServers": {
@@ -36,7 +38,6 @@ To use with your MCP Client (e.g. Claude Desktop, Windsurf or Cursor), add the f
         "10k SEC documents from 2023 for Apple"
       ],
       "env": {
-        "LLAMA_CLOUD_PROJECT_NAME": "<YOUR_PROJECT_NAME>",
         "LLAMA_CLOUD_API_KEY": "<YOUR_API_KEY>"
       }
     }
