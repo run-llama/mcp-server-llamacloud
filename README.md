@@ -1,3 +1,6 @@
+> [!CAUTION]
+> This project is archived and no longer supported. See [the docs](https://developers.llamaindex.ai/for-agents/) for the latest on connecting your agent to LlamaParse Platform APIs.
+
 # LlamaCloud MCP Server
 
 A MCP server connecting to multiple managed indexes on [LlamaCloud](https://cloud.llamaindex.ai/)
